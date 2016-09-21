@@ -11,7 +11,7 @@ import static spark.Spark.*;
 
 public class App {
     public static void main( String[] args ) throws IOException {
-        App.directorySearch("/home/savannah/Documents/code/limon/movies/drama");
+        App.directorySearch("/home/savannah/Documents/code/limon/");
 
     }
     private static Set<String> movieExtensions = new HashSet<>(Arrays.asList("mp4", "avi", "mkv", "webm", "mov", "wmv",
@@ -29,15 +29,13 @@ public class App {
                     }
                 }
             }
-            if (movies.size() != 0) {
-                for (String movie: movies) {
-                    System.out.println(movie);
-                }
-            } else {
-                System.out.println(filePath + " is not a movie");
-            }
         });
-        return "Okay";
+        if (movies.size() != 0) {
+            for (String movie: movies) {
+                System.out.println(movie);
+            }
+        }
+        return movies.toString();
     }
 };
 
