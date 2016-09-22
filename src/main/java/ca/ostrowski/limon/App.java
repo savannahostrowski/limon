@@ -10,10 +10,7 @@ import retrofit2.http.Query;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.*;
 
 import static spark.Spark.*;
@@ -22,6 +19,7 @@ public class App {
     static String url = "http://www.omdbapi.com/";
 
     public static class Movie {
+        public String imdbID;
         public String Title;
         public String Year;
         public String Genre;
@@ -54,7 +52,7 @@ public class App {
         omdb = retrofit.create(OMDb.class);
 
         // get json for the movies found in the directories
-        getMovieInfo(moviesFound);
+        List<Movie> moviesJson = getMovieInfo(moviesFound);
 
         try {
             //open sqlite db connection
@@ -63,9 +61,10 @@ public class App {
             statement.setQueryTimeout(30);
             System.out.println("Connected to DB successfully");
 
-            statement.executeUpdate("create table if not exists movies (id integer, Title char(50), Year char(50)," +
+            statement.executeUpdate("drop table if exists movies");
+            statement.executeUpdate("create table movies (imdbID char(20), Title char(50), Year char(50)," +
             "Genre char(50), Director char(50), Actors char(255), Plot varchar(500), Poster char(100))");
-
+            dbInsert(moviesJson);
 
         }
         catch (SQLException e) {
@@ -122,17 +121,28 @@ public class App {
     }
 
     public static String createSQLtuple (Movie filmJson) throws IOException{
-        return quote(filmJson.Title) + ", " + quote(filmJson.Year) + ", " +
-                quote(filmJson.Genre) + ", " + quote(filmJson.Director) + ", " +
-                quote(filmJson.Actors) + ", " + quote(filmJson.Plot) + ", " +
-                quote(filmJson.Poster);
+        return quote(filmJson.imdbID) + ", " + quote(filmJson.Title) + ", " + quote(filmJson.Year) + ", " +
+                quote(filmJson.Genre) + ", " + quote(filmJson.Director) + ", " + quote(filmJson.Actors) + ", " +
+                quote(filmJson.Plot) + ", " + quote(filmJson.Poster);
     }
 
     public static void dbInsert (List<Movie> moviesJson) throws IOException, SQLException {
-        Statement statement = connection.createStatement();
         for (Movie filmJson: moviesJson) {
             String filmTuple = createSQLtuple(filmJson);
-            statement.executeUpdate("insert into movies values(" + filmTuple + ")");
+            String sqlStatement = "insert into movies values(?, ?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement statement = connection.prepareStatement(sqlStatement);
+            statement.setString(1, filmJson.imdbID);
+            statement.setString(2, filmJson.Title);
+            statement.setString(3, filmJson.Year);
+            statement.setString(4, filmJson.Genre);
+            statement.setString(5, filmJson.Director);
+            statement.setString(6, filmJson.Actors);
+            statement.setString(7, filmJson.Plot);
+            statement.setString(8, filmJson.Poster);
+            
+            statement.executeUpdate();
+
+
         }
     }
 }
