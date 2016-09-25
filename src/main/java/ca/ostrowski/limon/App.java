@@ -85,6 +85,8 @@ public class App {
             }
 
         }
+        staticFiles.location("/frontend");
+        get("/", (req, res) -> "");
 
     }
 
@@ -93,6 +95,7 @@ public class App {
 
     public static List<String> directorySearch(String rootDir) throws IOException {
         List<String> movies = new ArrayList<>();
+        List<String> paths = new ArrayList<>();
         Files.walk(Paths.get(rootDir)).forEach(filePath -> {
             if (!Files.isRegularFile(filePath)) {
                 return;
@@ -101,6 +104,7 @@ public class App {
             for (String extensionInstance: movieExtensions) {
                 if (ext.equals(extensionInstance)) {
                     movies.add(FilenameUtils.getBaseName(filePath.toString()));
+                    paths.add(filePath.toString());
                 }
             }
         });
@@ -119,16 +123,9 @@ public class App {
     public static String quote (String s) throws IOException {
         return "'" + s +"'";
     }
-
-    public static String createSQLtuple (Movie filmJson) throws IOException{
-        return quote(filmJson.imdbID) + ", " + quote(filmJson.Title) + ", " + quote(filmJson.Year) + ", " +
-                quote(filmJson.Genre) + ", " + quote(filmJson.Director) + ", " + quote(filmJson.Actors) + ", " +
-                quote(filmJson.Plot) + ", " + quote(filmJson.Poster);
-    }
-
+// need to insert paths to movies
     public static void dbInsert (List<Movie> moviesJson) throws IOException, SQLException {
         for (Movie filmJson: moviesJson) {
-            String filmTuple = createSQLtuple(filmJson);
             String sqlStatement = "insert into movies values(?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(sqlStatement);
             statement.setString(1, filmJson.imdbID);
@@ -141,9 +138,10 @@ public class App {
             statement.setString(8, filmJson.Poster);
             
             statement.executeUpdate();
-
-
         }
     }
+
+    
+
 }
 
