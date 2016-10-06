@@ -13,7 +13,8 @@ import java.nio.file.Paths;
 import java.sql.*;
 import java.util.*;
 
-import static spark.Spark.*;
+import static spark.Spark.get;
+import static spark.Spark.staticFiles;
 
 public class App {
     static String url = "http://www.omdbapi.com/";
@@ -27,6 +28,7 @@ public class App {
         public String Actors;
         public String Plot;
         public String Poster;
+        public String Path;
     }
 
     public interface OMDb {
@@ -63,7 +65,8 @@ public class App {
 
             statement.executeUpdate("drop table if exists movies");
             statement.executeUpdate("create table movies (imdbID char(20), Title char(50), Year char(50)," +
-            "Genre char(50), Director char(50), Actors char(255), Plot varchar(500), Poster char(100))");
+            "Genre char(50), Director char(50), Actors char(255), Plot varchar(500), Poster char(100), Path char(500))");
+            System.out.println("DB created");
             dbInsert(moviesJson);
 
         }
@@ -93,9 +96,10 @@ public class App {
     private static Set<String> movieExtensions = new HashSet<>(Arrays.asList("mp4", "avi", "mkv", "webm", "mov", "wmv",
             "m4p", "m4v", "mpg", "mp2", "mpeg", "mpe", "mpv", "m2v"));
 
+    static List<String> paths;
     public static List<String> directorySearch(String rootDir) throws IOException {
         List<String> movies = new ArrayList<>();
-        List<String> paths = new ArrayList<>();
+        paths = new ArrayList<>();
         Files.walk(Paths.get(rootDir)).forEach(filePath -> {
             if (!Files.isRegularFile(filePath)) {
                 return;
@@ -126,7 +130,17 @@ public class App {
 // need to insert paths to movies
     public static void dbInsert (List<Movie> moviesJson) throws IOException, SQLException {
         for (Movie filmJson: moviesJson) {
-            String sqlStatement = "insert into movies values(?, ?, ?, ?, ?, ?, ?, ?)";
+            String CurrentMoviePath = null;
+            for (int i = 0; i < paths.size(); i++) {
+                String movieName = FilenameUtils.getBaseName(paths.get(i));
+                if (movieName.equals(filmJson.Title)) {
+                    System.out.println("Inserting the movie: " + movieName);
+                    CurrentMoviePath = paths.get(i);
+                    break;
+                }
+            }
+
+            String sqlStatement = "insert into movies values(?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(sqlStatement);
             statement.setString(1, filmJson.imdbID);
             statement.setString(2, filmJson.Title);
@@ -136,12 +150,10 @@ public class App {
             statement.setString(6, filmJson.Actors);
             statement.setString(7, filmJson.Plot);
             statement.setString(8, filmJson.Poster);
-            
+            statement.setString(9, CurrentMoviePath);
             statement.executeUpdate();
         }
+        System.out.println("DB populated");
     }
-
-    
-
 }
 
