@@ -1,5 +1,7 @@
 package ca.ostrowski.limon;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.commons.io.FilenameUtils;
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -106,7 +108,10 @@ public class App {
             ResultSet rs = statement.executeQuery(orderSQLStatement);
 
             ArrayList<Movie> movieOutput = convertResultSetToArrayList(rs);
-            System.out.println(Arrays.toString(movieOutput.toArray()));
+
+            Gson gson = new GsonBuilder().create();
+            System.out.println(gson.toJson(movieOutput));
+
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
