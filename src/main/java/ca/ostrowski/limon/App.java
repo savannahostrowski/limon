@@ -29,12 +29,41 @@ public class App {
         public String Plot;
         public String Poster;
         public String Path;
+
+
+        public Movie(String imdbID, String title, String year, String genre, String director,
+                     String actors, String plot, String poster, String path) {
+            this.imdbID = imdbID;
+            Title = title;
+            Year = year;
+            Genre = genre;
+            Director = director;
+            Actors = actors;
+            Plot = plot;
+            Poster = poster;
+            Path = path;
+        }
+
+        @Override
+        public String toString() {
+            return "Movie{" +
+                    "imdbID='" + imdbID + '\'' +
+                    ", Title='" + Title + '\'' +
+                    ", Year='" + Year + '\'' +
+                    ", Genre='" + Genre + '\'' +
+                    ", Director='" + Director + '\'' +
+                    ", Actors='" + Actors + '\'' +
+                    ", Plot='" + Plot + '\'' +
+                    ", Poster='" + Poster + '\'' +
+                    ", Path='" + Path + '\'' +
+                    '}';
+        }
     }
 
     public interface OMDb {
         @GET("/")
         Call<Movie> movie(
-          @Query("t") String title
+                @Query("t") String title
         );
     }
 
@@ -63,26 +92,32 @@ public class App {
             statement.setQueryTimeout(30);
             System.out.println("Connected to DB successfully");
 
-            statement.executeUpdate("drop table if exists movies");
-            statement.executeUpdate("create table movies (imdbID char(20), Title char(50), Year char(50)," +
-            "Genre char(50), Director char(50), Actors char(255), Plot varchar(500), Poster char(100), Path char(500))");
+            statement.executeUpdate("DROP TABLE IF EXISTS movies");
+            statement.executeUpdate("CREATE TABLE movies (imdbID CHAR(20), Title CHAR(50), " +
+                    "Year CHAR(50), Genre CHAR(50), Director CHAR(50), Actors CHAR(255)," +
+                    "Plot VARCHAR(500), Poster CHAR(100), Path CHAR(500))");
             System.out.println("DB created");
-            dbInsert(moviesJson);
 
-        }
-        catch (SQLException e) {
+
+            dbInsert(moviesJson);
+            System.out.println("DB populated");
+
+            String orderSQLStatement = "SELECT * FROM movies ORDER BY Title;";
+            ResultSet rs = statement.executeQuery(orderSQLStatement);
+
+            ArrayList<Movie> movieOutput = convertResultSetToArrayList(rs);
+            System.out.println(Arrays.toString(movieOutput.toArray()));
+        } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
             System.err.println(e.getMessage());
-        }
-        finally {
+        } finally {
             try {
                 //if there already exists a connection
                 if (connection != null) {
                     connection.close();
                 }
-            }
-            catch (SQLException e) {
+            } catch (SQLException e) {
                 //connection close failed
                 System.err.println(e);
             }
@@ -97,6 +132,7 @@ public class App {
             "m4p", "m4v", "mpg", "mp2", "mpeg", "mpe", "mpv", "m2v"));
 
     static List<String> paths;
+
     public static List<String> directorySearch(String rootDir) throws IOException {
         List<String> movies = new ArrayList<>();
         paths = new ArrayList<>();
@@ -105,7 +141,7 @@ public class App {
                 return;
             }
             String ext = FilenameUtils.getExtension(filePath.toString());
-            for (String extensionInstance: movieExtensions) {
+            for (String extensionInstance : movieExtensions) {
                 if (ext.equals(extensionInstance)) {
                     movies.add(FilenameUtils.getBaseName(filePath.toString()));
                     paths.add(filePath.toString());
@@ -115,21 +151,22 @@ public class App {
         return movies;
     }
 
-    public static List<Movie> getMovieInfo (List<String> movies) throws IOException {
+    public static List<Movie> getMovieInfo(List<String> movies) throws IOException {
         List<Movie> moviesJson = new ArrayList<>();
-        for (String film: movies) {
+        for (String film : movies) {
             Movie m = omdb.movie(film).execute().body();
             moviesJson.add(m);
         }
         return moviesJson;
     }
 
-    public static String quote (String s) throws IOException {
-        return "'" + s +"'";
+    public static String quote(String s) throws IOException {
+        return "'" + s + "'";
     }
-// need to insert paths to movies
-    public static void dbInsert (List<Movie> moviesJson) throws IOException, SQLException {
-        for (Movie filmJson: moviesJson) {
+
+    // need to insert paths to movies
+    public static void dbInsert(List<Movie> moviesJson) throws IOException, SQLException {
+        for (Movie filmJson : moviesJson) {
             String CurrentMoviePath = null;
             for (int i = 0; i < paths.size(); i++) {
                 String movieName = FilenameUtils.getBaseName(paths.get(i));
@@ -140,7 +177,7 @@ public class App {
                 }
             }
 
-            String sqlStatement = "insert into movies values(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sqlStatement = "INSERT INTO movies VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(sqlStatement);
             statement.setString(1, filmJson.imdbID);
             statement.setString(2, filmJson.Title);
@@ -153,7 +190,33 @@ public class App {
             statement.setString(9, CurrentMoviePath);
             statement.executeUpdate();
         }
-        System.out.println("DB populated");
+    }
+
+    public static Movie createMovie(ResultSet rs) {
+        ArrayList<String> temp = new ArrayList<>();
+        for (int i = 1; i <= 9; i++) {
+            try {
+                temp.add(rs.getString(i));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        Movie m = new Movie(temp.get(0), temp.get(1), temp.get(2), temp.get(3), temp.get(4),
+                temp.get(5), temp.get(6), temp.get(7), temp.get(8));
+        return m;
+    }
+
+    public static ArrayList<Movie> convertResultSetToArrayList(ResultSet rs) {
+        ArrayList<Movie> output = new ArrayList<>();
+        try {
+            while(rs.next()) {
+                Movie temp = createMovie(rs);
+                output.add(temp);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return output;
     }
 }
 
