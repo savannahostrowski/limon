@@ -15,11 +15,11 @@ import java.nio.file.Paths;
 import java.sql.*;
 import java.util.*;
 
-import static spark.Spark.get;
-import static spark.Spark.staticFiles;
+import static spark.Spark.*;
 
 public class App {
     static String url = "http://www.omdbapi.com/";
+    static ResultSet rs = null;
 
     public static class Movie {
         public String imdbID;
@@ -72,7 +72,7 @@ public class App {
     static OMDb omdb = null;
     static Connection connection = null;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, SQLException {
         //Root directory to search for movies
         List<String> moviesFound = App.directorySearch("/home/savannah/Documents/code/limon/");
 
@@ -104,13 +104,21 @@ public class App {
             dbInsert(moviesJson);
             System.out.println("DB populated");
 
+//            String orderSQLStatement = "SELECT * FROM movies ORDER BY Title;";
+//            ResultSet rs = statement.executeQuery(orderSQLStatement);
+//            System.out.println(convertResultSetToJSON(rs));
+
+            //        staticFiles.location("/frontend");
+            get("/", (req, res) -> {
+                return "cat";
+            });
+
+
             String orderSQLStatement = "SELECT * FROM movies ORDER BY Title;";
             ResultSet rs = statement.executeQuery(orderSQLStatement);
+            String jsonString = convertResultSetToJSON(rs);
 
-            ArrayList<Movie> movieOutput = convertResultSetToArrayList(rs);
-
-            Gson gson = new GsonBuilder().create();
-            System.out.println(gson.toJson(movieOutput));
+            get("/movies", (req,res) -> jsonString);
 
         } catch (SQLException e) {
             // if the error message is "out of memory",
@@ -128,8 +136,6 @@ public class App {
             }
 
         }
-        staticFiles.location("/frontend");
-        get("/", (req, res) -> "");
 
     }
 
@@ -211,7 +217,7 @@ public class App {
         return m;
     }
 
-    public static ArrayList<Movie> convertResultSetToArrayList(ResultSet rs) {
+    public static String convertResultSetToJSON(ResultSet rs) {
         ArrayList<Movie> output = new ArrayList<>();
         try {
             while(rs.next()) {
@@ -221,7 +227,8 @@ public class App {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return output;
+        Gson gson = new GsonBuilder().create();
+        return gson.toJson(output);
     }
 }
 
