@@ -15,7 +15,8 @@ import java.nio.file.Paths;
 import java.sql.*;
 import java.util.*;
 
-import static spark.Spark.*;
+import static spark.Spark.get;
+import static spark.Spark.staticFiles;
 
 public class App {
     static String url = "http://www.omdbapi.com/";
@@ -104,15 +105,8 @@ public class App {
             dbInsert(moviesJson);
             System.out.println("DB populated");
 
-//            String orderSQLStatement = "SELECT * FROM movies ORDER BY Title;";
-//            ResultSet rs = statement.executeQuery(orderSQLStatement);
-//            System.out.println(convertResultSetToJSON(rs));
-
-            //        staticFiles.location("/frontend");
-            get("/", (req, res) -> {
-                return "cat";
-            });
-
+            staticFiles.location("/frontend");
+            get("/", (req, res) -> "");
 
             String orderSQLStatement = "SELECT * FROM movies ORDER BY Title;";
             ResultSet rs = statement.executeQuery(orderSQLStatement);
@@ -222,6 +216,7 @@ public class App {
         try {
             while(rs.next()) {
                 Movie temp = createMovie(rs);
+                System.out.println(temp);
                 output.add(temp);
             }
         } catch (SQLException e) {
