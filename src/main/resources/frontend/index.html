@@ -1,12 +1,65 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title>Limon</title>
+<head>
+	<meta charset="utf-8" />
+	<title>React Tutorial</title>
+	<script src="https://unpkg.com/react@15.3.2/dist/react.js"></script>
+	<script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.js"></script>
+	<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	<script src="https://unpkg.com/jquery@3.1.0/dist/jquery.min.js"></script>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script src="https://unpkg.com/remarkable@1.7.1/dist/remarkable.min.js"></script>
+</head>
+<body>
+<div id="content"></div>
+<script type="text/babel">
+	var Movie = React.createClass({
 
-	</head>
-	<body>
-	<h1>It's Limon</h1>
-	</body>
+		getInitialState: function() {
+			return {
+				movies: []
+			}
+		},
+
+		componentDidMount: function() {
+			var th = this;
+			this.serverRequest =
+				axios.get(this.props.source)
+					 .then(function(result) {
+						th.setState({
+							movies: result.data.movies
+
+						});
+
+					})
+		},
+		componentWillUnmount: function () {
+			this.serverRequest.abort();
+		},
+		render: function() {
+			return (
+				<div>
+					<h2>Movies Available</h2>
+						{this.state.movies.map(function(movie) {
+							return(
+								<div id={movie.imdbID} classname="movie">
+									<a href={movie.Path}>
+										<img src={movie.Poster}></img>
+									</a>
+									<h3>{movie.Title}></h3>
+									<h4>{movie.Plot}</h4>
+									<p>{movie.Actors}</p>
+									<p>{movie.Director}</p>
+									<p>{movie.Year}</p>
+								</div>
+							);
+						})}
+				</div>
+			)
+		}
+	});
+	ReactDOM.render(<Movie source="movies"/>, document.getElementById('content'));
+</script>
+</body>
 </html>
-
