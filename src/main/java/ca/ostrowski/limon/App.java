@@ -113,6 +113,7 @@ public class App {
             String jsonString = convertResultSetToJSON(rs);
 
             get("/movies", (req,res) -> jsonString);
+            System.out.println(jsonString);
 
         } catch (SQLException e) {
             // if the error message is "out of memory",
@@ -216,14 +217,14 @@ public class App {
         try {
             while(rs.next()) {
                 Movie temp = createMovie(rs);
-                System.out.println(temp);
                 output.add(temp);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         Gson gson = new GsonBuilder().create();
-        return gson.toJson(output);
+
+        return "{'movies' : " + gson.toJson(output) + "}";
     }
 }
 
