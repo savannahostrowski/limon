@@ -112,7 +112,7 @@ public class App {
             ResultSet rs = statement.executeQuery(orderSQLStatement);
             String jsonString = convertResultSetToJSON(rs);
 
-            get("/movies", (req,res) -> jsonString);
+            get("/movies.json", (req,res) -> jsonString);
             System.out.println(jsonString);
 
         } catch (SQLException e) {
@@ -224,7 +224,7 @@ public class App {
         }
         Gson gson = new GsonBuilder().create();
 
-        return "{'movies' : " + gson.toJson(output) + "}";
+        return gson.toJson(output);
     }
 }
 
