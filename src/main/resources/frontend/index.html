@@ -3,17 +3,33 @@
 <html>
 <head>
 	<meta charset="utf-8" />
-	<title>React Tutorial</title>
+	<title>Limon - A Local Video Interface</title>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 	<script src="https://unpkg.com/react@15.3.2/dist/react.js"></script>
 	<script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.js"></script>
 	<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
 	<script src="https://unpkg.com/jquery@3.1.0/dist/jquery.min.js"></script>
 	<script src="https://unpkg.com/remarkable@1.7.1/dist/remarkable.min.js"></script>
+    <script src="https://unpkg.com/react-router/umd/ReactRouter.min.js"></script>
+
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-min.css">
+    <link rel="stylesheet" href="css/general.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
 </head>
 <body>
+<h2 class="available">Movies and TV Shows Available</h2>
 <div id="content"></div>
 <script type="text/babel">
+    var { Router,
+      Route,
+      IndexRoute,
+      IndexLink,
+      Link } = ReactRouter;
+      var browserHistory = ReactRouter.browserHistory;
+    var destination = document.querySelector("#content");
 	var Movie = React.createClass({
 
 		getInitialState: function() {
@@ -38,27 +54,28 @@
 		},
 		render: function() {
 			return (
-				<div>
-					<h2>Movies Available</h2>
-						{this.state.movies.map(function(movie) {
-							return(
-								<div id={movie.imdbID} classname="movie">
-									<a href={movie.Path}>
-										<img src={movie.Poster}></img>
-									</a>
-									<h3>{movie.Title}</h3>
-									<h4>{movie.Plot}</h4>
-									<p>{movie.Actors}</p>
-									<p>{movie.Director}</p>
-									<p>{movie.Year}</p>
-								</div>
-							);
-						})}
-				</div>
+				<ul className="pure-g">
+                    {this.state.movies.map(function(movie) {
+                    var moviePath = "/movie/" + movie.imdbID;
+                        return(
+                            <li className="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3 pure-u-xl-1-3 movie" key={movie.imdbID}>
+                                <a href={moviePath}>
+                                    <img src={movie.Poster}></img>
+                                </a>
+                                <div className="description">
+                                    <h3>{movie.Title} ({movie.Year})</h3>
+                                    <h4>{movie.Plot}</h4>
+                                    <p>Actors: {movie.Actors}</p>
+                                    <p> Director: {movie.Director}</p>
+                                </div>
+                            </li>
+                        );
+                    })}
+				</ul>
 			)
 		}
 	});
-	ReactDOM.render(<Movie source="/movies.json"/>, document.querySelector("#content"));
+	ReactDOM.render(<Movie/>, destination);
 </script>
 </body>
 </html>

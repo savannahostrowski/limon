@@ -1,0 +1,24 @@
+body {
+    padding: 20px;
+}
+
+.available {
+    text-align: center;
+}
+
+.movie .description {
+    max-width: 90%;
+    display: block;
+    margin: auto;
+}
+
+.movie .description h3 {
+    text-align: center;
+}
+
+
+.movie img {
+    display: block;
+    margin: auto;
+
+}

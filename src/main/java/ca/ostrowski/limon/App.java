@@ -110,10 +110,10 @@ public class App {
 
             String orderSQLStatement = "SELECT * FROM movies ORDER BY Title;";
             ResultSet rs = statement.executeQuery(orderSQLStatement);
-            String jsonString = convertResultSetToJSON(rs);
+            String jsonString = convertToJSONAndServe(rs, statement);
 
             get("/movies.json", (req,res) -> jsonString);
-            System.out.println(jsonString);
+
 
         } catch (SQLException e) {
             // if the error message is "out of memory",
@@ -212,19 +212,34 @@ public class App {
         return m;
     }
 
-    public static String convertResultSetToJSON(ResultSet rs) {
+    public static String convertToJSONAndServe(ResultSet rs, Statement stmt) {
         ArrayList<Movie> output = new ArrayList<>();
         try {
             while(rs.next()) {
                 Movie temp = createMovie(rs);
+                get("/movie/" + temp.imdbID, (req, res) -> {
+                    String getMovie = "SELECT Path FROM movies WHERE imdbID = " + temp.imdbID + ";";
+                    System.out.println(getMovie);
+                    ResultSet SingularRS = stmt.executeQuery(getMovie);
+                    System.out.println(SingularRS.getString("Path"));
+                    String MPath = null;
+                    while (SingularRS.next()) {
+                        MPath = SingularRS.getString("Path");
+                    }
+                    return MPath;
+                });
+
                 output.add(temp);
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         Gson gson = new GsonBuilder().create();
-
         return gson.toJson(output);
     }
 }
+
+
+
 
