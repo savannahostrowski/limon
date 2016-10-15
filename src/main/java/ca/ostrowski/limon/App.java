@@ -105,32 +105,35 @@ public class App {
             dbInsert(moviesJson);
             System.out.println("DB populated");
 
-            staticFiles.location("/frontend");
-            get("/", (req, res) -> "");
-
-            String orderSQLStatement = "SELECT * FROM movies ORDER BY Title;";
-            ResultSet rs = statement.executeQuery(orderSQLStatement);
-            String jsonString = convertToJSONAndServe(rs, statement);
-
-            get("/movies.json", (req,res) -> jsonString);
-
-
         } catch (SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found
             System.err.println(e.getMessage());
-        } finally {
-            try {
-                //if there already exists a connection
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                //connection close failed
-                System.err.println(e);
-            }
-
         }
+
+        staticFiles.location("/frontend");
+        get("/movies.json", (req, res) -> {
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30);
+            String orderSQLStatement = "SELECT * FROM movies ORDER BY Title;";
+            ResultSet rs = statement.executeQuery(orderSQLStatement);
+            return convertToJSON(rs);
+        });
+
+        get("/movie/watch/:id", (req, res) -> {
+            String imdbID = req.params(":id");
+            String getMovie = "SELECT Path FROM movies WHERE imdbID = '" + imdbID + "';";
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30);
+            ResultSet SingularRS = statement.executeQuery(getMovie);
+            String MPath = null;
+            while (SingularRS.next()) {
+                MPath = SingularRS.getString("Path");
+            }
+            return MPath;
+
+        });
+
 
     }
 
@@ -212,23 +215,12 @@ public class App {
         return m;
     }
 
-    public static String convertToJSONAndServe(ResultSet rs, Statement stmt) {
+    public static String convertToJSON(ResultSet rs) {
         ArrayList<Movie> output = new ArrayList<>();
         try {
             while(rs.next()) {
                 Movie temp = createMovie(rs);
-                get("/movie/" + temp.imdbID, (req, res) -> {
-                    String getMovie = "SELECT Path FROM movies WHERE imdbID = " + temp.imdbID + ";";
-                    System.out.println(getMovie);
-                    ResultSet SingularRS = stmt.executeQuery(getMovie);
-                    System.out.println(SingularRS.getString("Path"));
-                    String MPath = null;
-                    while (SingularRS.next()) {
-                        MPath = SingularRS.getString("Path");
-                    }
-                    return MPath;
-                });
-
+                System.out.println(temp.toString());
                 output.add(temp);
 
             }
