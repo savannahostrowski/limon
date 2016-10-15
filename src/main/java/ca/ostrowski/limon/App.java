@@ -9,6 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -129,8 +130,15 @@ public class App {
             String MPath = null;
             while (SingularRS.next()) {
                 MPath = SingularRS.getString("Path");
+
+
             }
-            return MPath;
+
+            HttpServletResponse raw = res.raw();
+            raw.getOutputStream().write(Files.readAllBytes(Paths.get(MPath)));
+            raw.getOutputStream().flush();
+            raw.getOutputStream().close();
+            return res.raw();
 
         });
 
