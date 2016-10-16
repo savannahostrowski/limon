@@ -16,8 +16,7 @@ import java.nio.file.Paths;
 import java.sql.*;
 import java.util.*;
 
-import static spark.Spark.get;
-import static spark.Spark.staticFiles;
+import static spark.Spark.*;
 
 public class App {
     static String url = "http://www.omdbapi.com/";
@@ -77,7 +76,7 @@ public class App {
     public static void main(String[] args) throws IOException, SQLException {
         //Root directory to search for movies
         List<String> moviesFound = App.directorySearch("/home/savannah/Documents/code/limon/");
-
+        System.out.println("Waiting for OMDb API...");
         //Create REST adapter which points to OMDb API
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(url)
@@ -113,6 +112,7 @@ public class App {
         }
 
         staticFiles.location("/frontend");
+
         get("/movies.json", (req, res) -> {
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);
@@ -122,6 +122,7 @@ public class App {
         });
 
         get("/movie/watch/:id", (req, res) -> {
+
             String imdbID = req.params(":id");
             String getMovie = "SELECT Path FROM movies WHERE imdbID = '" + imdbID + "';";
             Statement statement = connection.createStatement();
@@ -130,8 +131,6 @@ public class App {
             String MPath = null;
             while (SingularRS.next()) {
                 MPath = SingularRS.getString("Path");
-
-
             }
 
             HttpServletResponse raw = res.raw();
@@ -141,8 +140,6 @@ public class App {
             return res.raw();
 
         });
-
-
     }
 
     private static Set<String> movieExtensions = new HashSet<>(Arrays.asList("mp4", "avi", "mkv", "webm", "mov", "wmv",

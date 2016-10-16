@@ -1,9 +1,42 @@
 body {
     padding: 20px;
+    background-color: #39CCCC;
+    color: #FF851B;
+    font-family: 'Montserrat', sans-serif;
+    font-size: large;
+}
+
+.lst {
+    padding: 0;
+}
+.genre, .plot, .actors, .director{
+    color: black;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+    line-height: 20px;
+}
+
+.title {
+    margin-bottom: 5px;
+}
+.plot, .actors, .director {
+    margin: 10px auto;
+}
+
+.genre {
+    margin-top: 0px;
+    text-align: center;
+
 }
 
 .available {
     text-align: center;
+    font-size: xx-large;
+
+}
+
+.movie {
+    padding-bottom: 20px;
 }
 
 .movie .description {
@@ -20,5 +53,19 @@ body {
 .movie img {
     display: block;
     margin: auto;
+    max-width: 300px;
+    max-height: 444px;
 
+}
+
+.imgdiv {
+    opacity: 1;
+}
+
+.imgdiv:hover {
+    opacity: 0.75;
+    -webkit-transition: all 0.2s ease-in-out;
+    -moz-transition: all 0.2s ease-in-out;
+    -o-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
 }
