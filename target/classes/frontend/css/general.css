@@ -6,6 +6,34 @@ body {
     font-size: large;
 }
 
+.available {
+    text-align: center;
+    font-size: xx-large;
+
+}
+
+.movie {
+    padding-bottom: 20px;
+}
+
+.description {
+    max-width: 90%;
+    display: block;
+    margin: auto;
+}
+
+.description h3 {
+    text-align: center;
+}
+
+.movie img {
+    display: block;
+    margin: auto;
+    max-width: 300px;
+    max-height: 444px;
+
+}
+
 .lst {
     padding: 0;
 }
@@ -26,35 +54,6 @@ body {
 .genre {
     margin-top: 0px;
     text-align: center;
-
-}
-
-.available {
-    text-align: center;
-    font-size: xx-large;
-
-}
-
-.movie {
-    padding-bottom: 20px;
-}
-
-.movie .description {
-    max-width: 90%;
-    display: block;
-    margin: auto;
-}
-
-.movie .description h3 {
-    text-align: center;
-}
-
-
-.movie img {
-    display: block;
-    margin: auto;
-    max-width: 300px;
-    max-height: 444px;
 
 }
 

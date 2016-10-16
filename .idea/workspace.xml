@@ -2,14 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="821ea653-f7cd-413f-bc84-78f3743c3b61" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/ca/ostrowski/limon/App$Movie.class" afterPath="$PROJECT_DIR$/target/classes/ca/ostrowski/limon/App$Movie.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/ca/ostrowski/limon/App.class" afterPath="$PROJECT_DIR$/target/classes/ca/ostrowski/limon/App.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/ca/ostrowski/limon/App.java" afterPath="$PROJECT_DIR$/src/main/java/ca/ostrowski/limon/App.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/frontend/css/general.css" afterPath="$PROJECT_DIR$/src/main/resources/frontend/css/general.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/frontend/index.html" afterPath="$PROJECT_DIR$/src/main/resources/frontend/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/frontend/css/general.css" afterPath="$PROJECT_DIR$/target/classes/frontend/css/general.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/frontend/index.html" afterPath="$PROJECT_DIR$/target/classes/frontend/index.html" />
     </list>
     <ignored path="limon.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -60,8 +53,8 @@
       <file leaf-file-name="general.css" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/resources/frontend/css/general.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="450">
-              <caret line="65" column="17" selection-start-line="65" selection-start-column="17" selection-end-line="65" selection-end-column="17" />
+            <state relative-caret-position="540">
+              <caret line="57" column="1" selection-start-line="57" selection-start-column="1" selection-end-line="57" selection-end-column="1" />
               <folding />
             </state>
           </provider>
@@ -923,8 +916,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/frontend/css/general.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="65" column="17" selection-start-line="65" selection-start-column="17" selection-end-line="65" selection-end-column="17" />
+        <state relative-caret-position="540">
+          <caret line="57" column="1" selection-start-line="57" selection-start-column="1" selection-end-line="57" selection-end-column="1" />
           <folding />
         </state>
       </provider>
