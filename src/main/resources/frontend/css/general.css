@@ -1,6 +1,9 @@
+html {
+    background-repeat: no-repeat;
+}
 body {
     padding: 20px;
-    background-color: #39CCCC;
+    background: radial-gradient(#39CCCC, #000);
     color: #FF851B;
     font-family: 'Montserrat', sans-serif;
     font-size: large;
@@ -38,7 +41,7 @@ body {
     padding: 0;
 }
 .genre, .plot, .actors, .director{
-    color: black;
+    color: white;
     font-family: 'Open Sans', sans-serif;
     font-weight: 400;
     line-height: 20px;
