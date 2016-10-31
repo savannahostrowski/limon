@@ -1,5 +1,6 @@
 html {
     background-repeat: no-repeat;
+    height: 100vh;
 }
 body {
     padding: 20px;
@@ -70,4 +71,13 @@ body {
     -moz-transition: all 0.2s ease-in-out;
     -o-transition: all 0.2s ease-in-out;
     transition: all 0.2s ease-in-out;
+}
+
+#video {
+    max-height: 300px;
+    max-width: 640px;
+    margin: 0 auto;
+    position: relative;
+    top: 50%;
+    transform: translateY(50%);
 }

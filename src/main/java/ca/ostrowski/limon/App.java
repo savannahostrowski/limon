@@ -19,19 +19,19 @@ import java.util.*;
 import static spark.Spark.*;
 
 public class App {
-    static String url = "http://www.omdbapi.com/";
+    private static String url = "http://www.omdbapi.com/";
     static ResultSet rs = null;
 
-    public static class Movie {
-        public String imdbID;
-        public String Title;
-        public String Year;
-        public String Genre;
-        public String Director;
-        public String Actors;
-        public String Plot;
-        public String Poster;
-        public String Path;
+    private static class Movie {
+        String imdbID;
+        String Title;
+        String Year;
+        String Genre;
+        String Director;
+        String Actors;
+        String Plot;
+        String Poster;
+        String Path;
 
 
         public Movie(String imdbID, String title, String year, String genre, String director,
@@ -63,15 +63,15 @@ public class App {
         }
     }
 
-    public interface OMDb {
+    interface OMDb {
         @GET("/")
         Call<Movie> movie(
                 @Query("t") String title
         );
     }
 
-    static OMDb omdb = null;
-    static Connection connection = null;
+    private static OMDb omdb = null;
+    private static Connection connection = null;
 
     public static void main(String[] args) throws IOException, SQLException {
         //Root directory to search for movies
@@ -111,7 +111,6 @@ public class App {
             System.err.println(e.getMessage());
         }
 
-        staticFiles.location("/frontend");
 
         get("/movies.json", (req, res) -> {
             Statement statement = connection.createStatement();
@@ -120,34 +119,14 @@ public class App {
             ResultSet rs = statement.executeQuery(orderSQLStatement);
             return convertToJSON(rs);
         });
-
-        get("/movie/watch/:id", (req, res) -> {
-
-            String imdbID = req.params(":id");
-            String getMovie = "SELECT Path FROM movies WHERE imdbID = '" + imdbID + "';";
-            Statement statement = connection.createStatement();
-            statement.setQueryTimeout(30);
-            ResultSet SingularRS = statement.executeQuery(getMovie);
-            String MPath = null;
-            while (SingularRS.next()) {
-                MPath = SingularRS.getString("Path");
-            }
-
-            HttpServletResponse raw = res.raw();
-            raw.getOutputStream().write(Files.readAllBytes(Paths.get(MPath)));
-            raw.getOutputStream().flush();
-            raw.getOutputStream().close();
-            return res.raw();
-
-        });
     }
 
     private static Set<String> movieExtensions = new HashSet<>(Arrays.asList("mp4", "avi", "mkv", "webm", "mov", "wmv",
             "m4p", "m4v", "mpg", "mp2", "mpeg", "mpe", "mpv", "m2v"));
 
-    static List<String> paths;
+    private static List<String> paths;
 
-    public static List<String> directorySearch(String rootDir) throws IOException {
+    private static List<String> directorySearch(String rootDir) throws IOException {
         List<String> movies = new ArrayList<>();
         paths = new ArrayList<>();
         Files.walk(Paths.get(rootDir)).forEach(filePath -> {
@@ -165,7 +144,7 @@ public class App {
         return movies;
     }
 
-    public static List<Movie> getMovieInfo(List<String> movies) throws IOException {
+    private static List<Movie> getMovieInfo(List<String> movies) throws IOException {
         List<Movie> moviesJson = new ArrayList<>();
         for (String film : movies) {
             Movie m = omdb.movie(film).execute().body();
@@ -173,20 +152,15 @@ public class App {
         }
         return moviesJson;
     }
-
-    public static String quote(String s) throws IOException {
-        return "'" + s + "'";
-    }
-
     // need to insert paths to movies
-    public static void dbInsert(List<Movie> moviesJson) throws IOException, SQLException {
+    private static void dbInsert(List<Movie> moviesJson) throws IOException, SQLException {
         for (Movie filmJson : moviesJson) {
             String CurrentMoviePath = null;
-            for (int i = 0; i < paths.size(); i++) {
-                String movieName = FilenameUtils.getBaseName(paths.get(i));
+            for (String path : paths) {
+                String movieName = FilenameUtils.getBaseName(path);
                 if (movieName.equals(filmJson.Title)) {
                     System.out.println("Inserting the movie: " + movieName);
-                    CurrentMoviePath = paths.get(i);
+                    CurrentMoviePath = path;
                     break;
                 }
             }
@@ -206,7 +180,7 @@ public class App {
         }
     }
 
-    public static Movie createMovie(ResultSet rs) {
+    private static Movie createMovie(ResultSet rs) {
         ArrayList<String> temp = new ArrayList<>();
         for (int i = 1; i <= 9; i++) {
             try {
@@ -215,12 +189,11 @@ public class App {
                 e.printStackTrace();
             }
         }
-        Movie m = new Movie(temp.get(0), temp.get(1), temp.get(2), temp.get(3), temp.get(4),
+        return new Movie(temp.get(0), temp.get(1), temp.get(2), temp.get(3), temp.get(4),
                 temp.get(5), temp.get(6), temp.get(7), temp.get(8));
-        return m;
     }
 
-    public static String convertToJSON(ResultSet rs) {
+    private static String convertToJSON(ResultSet rs) {
         ArrayList<Movie> output = new ArrayList<>();
         try {
             while(rs.next()) {
