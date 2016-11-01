@@ -10,7 +10,10 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.*;
@@ -134,9 +137,34 @@ public class App {
                 return;
             }
             String ext = FilenameUtils.getExtension(filePath.toString());
+            String fileName = new File(filePath.toString()).getName();
             for (String extensionInstance : movieExtensions) {
                 if (ext.equals(extensionInstance)) {
-                    movies.add(FilenameUtils.getBaseName(filePath.toString()));
+                    ProcessBuilder pb = new ProcessBuilder(
+                            "/home/savannah/Documents/code/limon/getMovieName.sh", filePath.toString());
+                    try {
+                        Process p = pb.start();
+                        p.waitFor();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                        StringBuilder builder = new StringBuilder();
+                        String line = reader.readLine();
+                        while (line != null) {
+                            builder.append(line);
+                            line = reader.readLine();
+                        }
+                        String result = builder.toString();
+                        if (result.equals("")) {
+                            movies.add(FilenameUtils.getBaseName(filePath.toString()));
+                        } else {
+                            String[] movieTitle = result.replaceAll("\\s+","").split(":");
+                            String movieResult = movieTitle[1];
+                            movies.add(movieResult);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     paths.add(filePath.toString());
                 }
             }

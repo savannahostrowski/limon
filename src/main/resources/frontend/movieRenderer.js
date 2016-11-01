@@ -37,9 +37,12 @@ var { Router,
                             <div className="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3 pure-u-xl-1-3 movie" key={movie.imdbID}>
                                 <div className="imgdiv">
                                     <a href={moviePath}>
-                                        <img src={movie.Poster}></img>
+                                        <img className="poster" src={movie.Poster}></img>
+                                        <div className="play">
+                                            <img className="button" src="assets/play.png"/>
+                                        </div>
                                     </a>
-                                  </div>
+                                </div>
                                 <div className="description">
                                     <h3 className="title">{movieTitle} ({movie.Year})</h3>
                                     <h5 className="genre">{movie.Genre}</h5>
