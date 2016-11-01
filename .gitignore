@@ -1,3 +1,5 @@
 movies.db
 movies/
-target/classes/frontend/main.js
+.idea
+target/
+node_modules/
