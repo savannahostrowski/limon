@@ -10,6 +10,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.plaf.nimbus.State;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -114,12 +115,20 @@ public class App {
             System.err.println(e.getMessage());
         }
 
-
-        get("/movies.json", (req, res) -> {
+        get("/api/movies.json", (req, res) -> {
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);
             String orderSQLStatement = "SELECT * FROM movies ORDER BY Title;";
             ResultSet rs = statement.executeQuery(orderSQLStatement);
+            return convertToJSON(rs);
+        });
+
+        get("/api/:id/movie.json", (req, res) -> {
+            String id = req.params(":id");
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30);
+            String getMovie = "SELECT * FROM movies WHERE imdbID ='" + id + "';";
+            ResultSet rs = statement.executeQuery(getMovie);
             return convertToJSON(rs);
         });
     }

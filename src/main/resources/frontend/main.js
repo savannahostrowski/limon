@@ -1,11 +1,34 @@
 $(document).ready(function () {
-    var id = window.location.href.split("/").pop();
-    var video = document.getElementById("vid");
-    var source = document.createElement("source");
+    function getParameterByName(name, url) {
+        if (!url) {
+          url = window.location.href;
+        }
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+    var id = getParameterByName("id");
+    var jsonPage = "/api/" + id  + "/movie.json";
+    function getJSON() {
+        return $.getJSON(jsonPage);
+    }
+    
+    var elem;
+    getJSON().then(function(data) {
+        elem = data[0];
+        var path = elem.Path;
+        var arr = path.split("/");
+        var end = arr.slice(arr.length - 2, arr.length);
+        var relPath = "/" + end[0] + "/" + end[1];
+        var video = document.getElementById("my_video_html5_api");
+        var source = document.createElement("source");
 
-    source.src = "/movies/The%20Goonies.mp4";
-    source.type = "video/mp4";
-    video.appendChild(source);
-
+        source.src = relPath;
+        source.type = "video/mp4";
+        video.appendChild(source);
+    });
 });
 

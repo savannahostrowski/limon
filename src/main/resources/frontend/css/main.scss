@@ -1,0 +1,144 @@
+html {
+    background-repeat: no-repeat;
+
+    body {
+        padding: 20px;
+        background: radial-gradient(#2AA6A6, #000000) no-repeat center center fixed;
+        background-size: cover;
+        color: #F5E320;
+        font-family: 'Cabin', Helvetica, Arial, sans-serif;
+        font-size: large;
+    }
+}
+
+
+.home {
+    text-align: center;
+}
+
+section img {
+    position: relative;
+    width: 50px;
+    height: 50px;
+}
+
+.home img {
+    left: 30px;
+    top: -30px;
+}
+
+.limon {
+    font-family: 'Lobster', Georgia, Times, serif;
+    letter-spacing: 7px;
+    text-align: center;
+    font-size: 5rem;
+    text-shadow: 2px 2px #fff;
+    margin-bottom: 0.2em;
+    padding:0 16px 0 0;
+    display: inline-block;
+    position: relative;
+    left: 35px;
+}
+.available {
+    text-align: center;
+    font-size: x-large;
+    font-family: 'Cabin', Helvetica, Arial, sans-serif;
+    margin-bottom: 1em;
+}
+
+.movie {
+    padding-bottom: 20px;
+}
+
+.description {
+    max-width: 90%;
+    display: block;
+    margin: auto;
+}
+
+.description h3 {
+    text-align: center;
+}
+
+.movie img {
+    display: block;
+    margin: auto;
+    max-width: 300px;
+    max-height: 444px;
+}
+
+.lst {
+    padding: 0;
+}
+.genre, .plot, .actors, .director{
+    color: white;
+    font-family: 'Cabin', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    line-height: 20px;
+}
+
+.title {
+    margin-bottom: 5px;
+}
+.plot, .actors, .director {
+    margin: 10px auto;
+}
+
+.genre {
+    margin-top: 0px;
+    text-align: center;
+}
+
+.imgdiv {
+    opacity: 1;
+    position: relative;
+}
+.play {
+    display: block;
+}
+
+.play .button {
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+.imgdiv:hover {
+    opacity: 0.75;
+    -webkit-transition: all 0.2s ease-in-out;
+    -moz-transition: all 0.2s ease-in-out;
+    -o-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+}
+
+.imgdiv:hover .play .button {
+    opacity: 1;
+}
+
+
+// -------------
+// watch page
+// -------------
+#video {
+ max-width: 640px;
+ text-align: left;
+ margin: 30px auto;
+ width: 100%;
+ height: 100px;
+}
+
+.watch .return {
+    display: inline-block;
+    color: white;
+    text-decoration: none;
+    font-family: 'Lobster', Georgia, Times, serif;
+    font-weight: lighter;
+    font-size: 1.5rem;
+}
+
+.watch .return:hover {
+    text-decoration: underline;
+}

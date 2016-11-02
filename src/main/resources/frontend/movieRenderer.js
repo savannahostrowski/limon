@@ -3,7 +3,7 @@ var { Router,
       IndexRoute,
       IndexLink,
       Link } = ReactRouter;
-      var browserHistory = ReactRouter.browserHistory;
+    var browserHistory = ReactRouter.browserHistory;
     var destination = document.querySelector("#content");
 	var Movie = React.createClass({
 
@@ -17,7 +17,7 @@ var { Router,
 		    var _this = this;
                 this.serverRequest =
                     axios
-                        .get("/movies.json")
+                        .get("/api/movies.json")
                         .then(function(result) {
                            _this.setState({
                                 movies: result.data
@@ -31,7 +31,7 @@ var { Router,
 			return (
 				<div className="pure-g lst">
                     {this.state.movies.map(function(movie) {
-                    var moviePath = "/movie/watch/" + movie.imdbID;
+                    var moviePath = "/watch.html?title=" + movie.Title + "&id=" + movie.imdbID;
                     var movieTitle = (movie.Title).toUpperCase();
                         return(
                             <div className="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3 pure-u-xl-1-3 movie" key={movie.imdbID}>
