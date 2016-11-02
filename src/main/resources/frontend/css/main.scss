@@ -130,6 +130,17 @@ section img {
  height: 100px;
 }
 
+.watchTitle {
+    font-family: 'Lobster', Georgia, Times, serif;
+    letter-spacing: 7px;
+    text-align: center;
+    font-size: 5rem;
+    text-shadow: 2px 2px #fff;
+    margin: 20px 0;
+    padding:0 16px 0 0;
+    position: relative;
+}
+
 .watch .return {
     display: inline-block;
     color: white;

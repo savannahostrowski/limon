@@ -3,3 +3,4 @@ movies/
 .idea
 target/
 node_modules/
+.sass-cache/

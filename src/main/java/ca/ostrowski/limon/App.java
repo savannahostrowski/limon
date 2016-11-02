@@ -100,7 +100,7 @@ public class App {
             System.out.println("Connected to DB successfully");
 
             statement.executeUpdate("DROP TABLE IF EXISTS movies");
-            statement.executeUpdate("CREATE TABLE movies (imdbID CHAR(20), Title CHAR(50), " +
+            statement.executeUpdate("CREATE TABLE movies (imdbID CHAR(20) UNIQUE, Title CHAR(50), " +
                     "Year CHAR(50), Genre CHAR(50), Director CHAR(50), Actors CHAR(255)," +
                     "Plot VARCHAR(500), Poster CHAR(100), Path CHAR(500))");
             System.out.println("DB created");
@@ -202,7 +202,7 @@ public class App {
                 }
             }
 
-            String sqlStatement = "INSERT INTO movies VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sqlStatement = "INSERT OR IGNORE INTO movies VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(sqlStatement);
             statement.setString(1, filmJson.imdbID);
             statement.setString(2, filmJson.Title);
@@ -235,9 +235,7 @@ public class App {
         try {
             while(rs.next()) {
                 Movie temp = createMovie(rs);
-                System.out.println(temp.toString());
                 output.add(temp);
-
             }
         } catch (SQLException e) {
             e.printStackTrace();
